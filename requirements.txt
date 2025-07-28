@@ -1,4 +1,3 @@
-# requirements.txt
 fastf1
 pandas
 SQLAlchemy
