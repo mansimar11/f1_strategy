@@ -12,3 +12,4 @@ xgboost
 optuna
 lightgbm
 requests
+catboost
