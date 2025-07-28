@@ -1,4 +1,4 @@
-# train.py (Simple & Reliable XGBoost Version)
+# train.py (Simple & Reliable XGBoost Version with model.pkl saving)
 import pandas as pd
 from sqlalchemy import create_engine
 import mlflow
@@ -8,6 +8,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error
+import joblib
 from config import DATABASE_URL
 from track_config import TRACK_CHARACTERISTICS
 
@@ -30,7 +31,7 @@ df['track_evolution'] = (df['LapNumber'] - 1) * -0.015
 df['tyre_load'] = df['TyreLife'] * df['downforce']
 
 y = df['LapTime']
-X = df[['TyreLife', 'Compound', 'track_temp', 'abrasiveness', 'downforce', 
+X = df[['TyreLife', 'Compound', 'track_temp', 'abrasiveness', 'downforce',
         'fuel_correction', 'track_evolution', 'tyre_load', 'grip_type']]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -49,12 +50,17 @@ with mlflow.start_run(run_name="XGBoost_Reliable") as run:
     pipeline.fit(X_train, y_train)
     
     predictions = pipeline.predict(X_test)
-    # Corrected RMSE Calculation
     mse = mean_squared_error(y_test, predictions)
     rmse = mse**0.5
     mape = mean_absolute_percentage_error(y_test, predictions)
 
-    mlflow.log_metric("rmse", rmse); mlflow.log_metric("mape", mape)
+    mlflow.log_metric("rmse", rmse)
+    mlflow.log_metric("mape", mape)
     mlflow.sklearn.log_model(pipeline, "model")
     mlflow.set_tag("best_overall_model", "true")
+
+    # --- Save for Streamlit app to use ---
+    joblib.dump(pipeline, "model.pkl")
+    mlflow.log_artifact("model.pkl")
+
     print(f"✅ XGBoost Model logged. RMSE: {rmse:.4f}s | MAPE: {mape:.2%}")

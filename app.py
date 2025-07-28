@@ -1,72 +1,73 @@
-# app.py
-import streamlit as st
-from PIL import Image
-from pathlib import Path
+# train.py
+import pandas as pd
+import numpy as np
+import joblib
+from sqlalchemy import create_engine
+import mlflow
+import optuna
+from catboost import CatBoostRegressor
+from sklearn.model_selection import GroupKFold
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error
+from config import DATABASE_URL
+from track_config import TRACK_CHARACTERISTICS
 
-st.set_page_config(
-    page_title="F1 Strategy Simulator | Home",
-    page_icon="🏎️",
-    layout="wide"
-)
+# --- QUICK TEST CONFIGURATIONS ---
+N_TRIALS = 4
+TRACK = "monza"
+TARGET_COLUMN = "lap_time"
 
-# --- Header ---
-st.title("F1 Scientific Strategy Simulator 🏎️")
-st.markdown("### _The Definitive Tool for Motorsport Aficionados_")
+# --- Load Data ---
+engine = create_engine(DATABASE_URL)
+df = pd.read_sql_table(TRACK, con=engine)
 
-# --- BANNER IMAGE WITH WIDER CROPPING ---
-script_dir = Path(__file__).parent
-image_path = script_dir / "image.png"
+# --- Preprocessing ---
+X = df.drop(columns=["lap_time", "driver", "group_id"])
+y = df[TARGET_COLUMN]
+groups = df["group_id"]
 
-try:
-    image = Image.open(image_path)
-    
-    width, height = image.size
-    aspect_ratio = width / height
-    
-    # Desired aspect ratio (21:9 for a very wide banner)
-    desired_aspect_ratio = 21 / 9
-    
-    if aspect_ratio > desired_aspect_ratio:
-        new_width = int(desired_aspect_ratio * height)
-        offset = (width - new_width) / 2
-        cropped_image = image.crop((offset, 0, width - offset, height))
-    else:
-        new_height = int(width / desired_aspect_ratio)
-        offset = (height - new_height) / 2
-        cropped_image = image.crop((0, offset, width, height - offset))
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
 
-    # --- THIS IS THE CORRECTED LINE ---
-    st.image(
-        cropped_image, 
-        caption="An iconic moment: Alonso, Vettel, and Hamilton perform donuts after the 2018 Abu Dhabi Grand Prix.",
-        use_container_width=True # Replaced the deprecated parameter
-    )
-    # ------------------------------------
+# --- Objective for Optuna ---
+def objective(trial):
+    params = {
+        "iterations": trial.suggest_int("iterations", 100, 300),
+        "depth": trial.suggest_int("depth", 4, 10),
+        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3),
+        "loss_function": "RMSE",
+        "verbose": 0,
+    }
 
-except FileNotFoundError:
-    st.error(f"Error: 'image.png' not found. Please make sure the image is in the same folder as app.py.")
+    model = CatBoostRegressor(**params)
+    gkf = GroupKFold(n_splits=3)
 
-# --- Two-Column Layout for Text ---
-st.markdown("---")
-col1, col2 = st.columns(2)
+    scores = []
+    for train_idx, valid_idx in gkf.split(X_scaled, y, groups):
+        X_train, X_valid = X_scaled[train_idx], X_scaled[valid_idx]
+        y_train, y_valid = y.iloc[train_idx], y.iloc[valid_idx]
+        model.fit(X_train, y_train)
+        preds = model.predict(X_valid)
+        rmse = mean_squared_error(y_valid, preds, squared=False)
+        scores.append(rmse)
 
-with col1:
-    with st.container(border=True):
-        st.header("About This Project")
-        st.write("""
-        This application uses a sophisticated XGBoost model, trained on historical race data, to provide high-fidelity F1 strategy simulations. 
-        Select a tool from the sidebar to begin planning and predicting race outcomes like a true strategist on the pit wall.
-        """)
+    return np.mean(scores)
 
-with col2:
-    with st.container(border=True):
-        st.header("Scientific Principles Modelled")
-        st.write("""
-        - 🏎️ **Tyre Degradation:** Predicts lap time drop-off.
-        - ⛽ **Fuel Load:** Simulates the car getting lighter and faster.
-        - ✨ **Track Evolution:** Models the track "rubbering in".
-        - 🧬 **Circuit DNA:** Considers downforce, abrasiveness, etc.
-        - 🧑‍🚀 **Driver Factor:** Simulates a driver's unique skill.
-        """)
+# --- MLflow Tracking ---
+mlflow.set_experiment("f1_strategy_sim")
 
-st.info("*If you no longer go for a gap that exists, you are no longer a racing driver.* - Ayrton Senna", icon="🏁")
+with mlflow.start_run():
+    study = optuna.create_study(direction="minimize")
+    study.optimize(objective, n_trials=N_TRIALS)
+
+    best_params = study.best_params
+    mlflow.log_params(best_params)
+
+    final_model = CatBoostRegressor(**best_params, loss_function="RMSE", verbose=0)
+    final_model.fit(X_scaled, y)
+
+    # Save model locally
+    joblib.dump(final_model, "model.pkl")
+    mlflow.log_artifact("model.pkl")
+
+    print(f"Best RMSE: {study.best_value:.4f}")
