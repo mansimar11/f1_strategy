@@ -9,9 +9,6 @@ __pycache__/
 venv/
 env/
 
-# Ignore sensitive configuration
-config.py
-
 # Ignore MLflow tracking data
 mlruns/
 
