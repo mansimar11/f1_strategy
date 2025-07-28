@@ -1,0 +1,13 @@
+# requirements.txt
+fastf1
+pandas
+SQLAlchemy
+psycopg2-binary
+scikit-learn
+joblib
+streamlit
+matplotlib
+pydantic
+mlflow
+xgboost
+lightgbm
