@@ -1,0 +1,22 @@
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment folders
+.conda/
+venv/
+env/
+
+# Ignore sensitive configuration
+config.py
+
+# Ignore MLflow tracking data
+mlruns/
+
+# Ignore FastF1 cache
+fastf1_cache/
+
+# Ignore system files
+.DS_Store
