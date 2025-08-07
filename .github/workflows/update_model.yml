@@ -22,17 +22,31 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+
+
       - name: Run data ingestion script
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python ingest_data.py
+          DATABASE_URL: "postgresql://neondb_owner:npg_6lYhEpGDCmW1@ep-orange-cloud-a1q1wej3-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+        run: python data_ingest.py
 
-      - name: Run model training script
+
+
+      - name: Run model training script (main)
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: "postgresql://neondb_owner:npg_6lYhEpGDCmW1@ep-orange-cloud-a1q1wej3-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
         run: python train.py
 
-      - name: Commit and push new model
+      # Uncomment below to use alternate training scripts if needed
+      # - name: Run model training script (new)
+      #   env:
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      #   run: python train_new.py
+      # - name: Run model training script (final)
+      #   env:
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      #   run: python train_final.py
+
+      - name: Commit and push new model artifacts
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
