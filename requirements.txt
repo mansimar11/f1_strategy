@@ -1,8 +1,5 @@
 fastf1
-<<<<<<< HEAD
 numpy
-=======
->>>>>>> 6654cc450a78f302f5fe365ff121aa506498f2a0
 pandas
 SQLAlchemy
 psycopg2-binary
@@ -16,8 +13,3 @@ xgboost
 optuna
 lightgbm
 requests
-<<<<<<< HEAD
-catboost
-=======
-catboost
->>>>>>> 6654cc450a78f302f5fe365ff121aa506498f2a0
