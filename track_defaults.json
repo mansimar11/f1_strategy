@@ -1,0 +1,122 @@
+{
+    "Abu Dhabi Grand Prix": {
+        "track_temp": 31.0,
+        "downforce": 3.0,
+        "abrasiveness": 2.0
+    },
+    "Australian Grand Prix": {
+        "track_temp": 25.0,
+        "downforce": 3.0,
+        "abrasiveness": 3.0
+    },
+    "Austrian Grand Prix": {
+        "track_temp": 30.0,
+        "downforce": 3.0,
+        "abrasiveness": 2.0
+    },
+    "Azerbaijan Grand Prix": {
+        "track_temp": 28.0,
+        "downforce": 1.0,
+        "abrasiveness": 1.0
+    },
+    "Bahrain Grand Prix": {
+        "track_temp": 35.0,
+        "downforce": 3.0,
+        "abrasiveness": 5.0
+    },
+    "Belgian Grand Prix": {
+        "track_temp": 20.0,
+        "downforce": 3.0,
+        "abrasiveness": 3.0
+    },
+    "British Grand Prix": {
+        "track_temp": 25.0,
+        "downforce": 4.0,
+        "abrasiveness": 4.0
+    },
+    "Canadian Grand Prix": {
+        "track_temp": 23.0,
+        "downforce": 2.0,
+        "abrasiveness": 1.0
+    },
+    "Chinese Grand Prix": {
+        "track_temp": 24.0,
+        "downforce": 3.0,
+        "abrasiveness": 3.0
+    },
+    "Dutch Grand Prix": {
+        "track_temp": 25.0,
+        "downforce": 5.0,
+        "abrasiveness": 4.0
+    },
+    "Emilia Romagna Grand Prix": {
+        "track_temp": 29.0,
+        "downforce": 4.0,
+        "abrasiveness": 3.0
+    },
+    "Hungarian Grand Prix": {
+        "track_temp": 35.0,
+        "downforce": 5.0,
+        "abrasiveness": 3.0
+    },
+    "Italian Grand Prix": {
+        "track_temp": 32.0,
+        "downforce": 1.0,
+        "abrasiveness": 2.0
+    },
+    "Japanese Grand Prix": {
+        "track_temp": 22.0,
+        "downforce": 4.0,
+        "abrasiveness": 4.0
+    },
+    "Las Vegas Grand Prix": {
+        "track_temp": 15.0,
+        "downforce": 1.0,
+        "abrasiveness": 1.0
+    },
+    "Mexico City Grand Prix": {
+        "track_temp": 25.0,
+        "downforce": 5.0,
+        "abrasiveness": 1.0
+    },
+    "Miami Grand Prix": {
+        "track_temp": 38.0,
+        "downforce": 3.0,
+        "abrasiveness": 2.0
+    },
+    "Monaco Grand Prix": {
+        "track_temp": 26.0,
+        "downforce": 5.0,
+        "abrasiveness": 1.0
+    },
+    "Qatar Grand Prix": {
+        "track_temp": 30.0,
+        "downforce": 3.0,
+        "abrasiveness": 4.0
+    },
+    "Saudi Arabian Grand Prix": {
+        "track_temp": 28.0,
+        "downforce": 2.0,
+        "abrasiveness": 2.0
+    },
+    "Singapore Grand Prix": {
+        "track_temp": 34.0,
+        "downforce": 5.0,
+        "abrasiveness": 2.0
+    },
+    "Spanish Grand Prix": {
+        "track_temp": 40.0,
+        "downforce": 4.0,
+        "abrasiveness": 5.0
+    },
+    "S\u00e3o Paulo Grand Prix": {
+        "track_temp": 28.0,
+        "downforce": 4.0,
+        "abrasiveness": 4.0
+    },
+    "United States Grand Prix": {
+        "track_temp": 33.0,
+        "downforce": 3.0,
+        "abrasiveness": 4.0
+    }
+}

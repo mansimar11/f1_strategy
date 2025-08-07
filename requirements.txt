@@ -1,0 +1,16 @@
+fastf1
+numpy
+pandas
+SQLAlchemy
+psycopg2-binary
+scikit-learn
+joblib
+streamlit
+matplotlib
+pydantic
+mlflow
+xgboost
+optuna
+lightgbm
+requests
+catboost
